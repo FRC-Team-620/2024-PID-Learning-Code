@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +18,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public Intake() {
     intakeMotor = new CANSparkMax(Constants.DEVICE_ID, MotorType.kBrushless);
+    intakeMotor.setIdleMode(IdleMode.kCoast);
   }
 
   public CANSparkMax getMotor() {
