@@ -4,17 +4,18 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 
-public class SetMotorPositionBangBang extends Command {
+public class SetMotorPositionProportional extends Command {
   Intake intakeSubsystem;
   double desiredPosition;
   double error;
 
-  /** Creates a new SetMotorPositionBangBang. */
-  public SetMotorPositionBangBang(Intake intakeSubsystem, double desiredPosition) {
+  /** Creates a new SetMotorPositionProportional. */
+  public SetMotorPositionProportional(Intake intakeSubsystem, double desiredPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intakeSubsystem = intakeSubsystem;
     this.desiredPosition = desiredPosition;
@@ -29,27 +30,20 @@ public class SetMotorPositionBangBang extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    // get current sensor position
     double currentPos = intakeSubsystem.getEncoderPosition();
 
-    if (!isWithinError(currentPos)) { // not there state
-      if (currentPos > this.desiredPosition) {
-        intakeSubsystem.setSpinSpeed(-Constants.SIMPLE_MOTOR_SPEED);
-      } else if (currentPos < this.desiredPosition) {
-        intakeSubsystem.setSpinSpeed(Constants.SIMPLE_MOTOR_SPEED);
-      }
-    } else if (isWithinError(currentPos)) { // there state
-      intakeSubsystem.setSpinSpeed(0);
-    }
-  }
+    // calculate error
+    double error = this.desiredPosition - currentPos;
 
-  private boolean isWithinError(double position) {
-    double upperLimit = this.desiredPosition + this.error;
-    double lowerLimit = this.desiredPosition - this.error;
-    if (position > upperLimit || position < lowerLimit) {
-      return false;
-    }
-    return true;
+    // calculate proportional controller output
+    double output = MathUtil.clamp(
+        Constants.ARM_K_proportional * error,
+        -Constants.ARM_MAX_OUTPUT,
+        Constants.ARM_MAX_OUTPUT);
+
+    intakeSubsystem.setSpinSpeed(output);
+
   }
 
   // Called once the command ends or is interrupted.

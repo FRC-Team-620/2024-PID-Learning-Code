@@ -4,12 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetMotorPositionBangBang;
+import frc.robot.commands.SetMotorPositionProportional;
 import frc.robot.commands.SimpleSetSpeedComand;
 import frc.robot.subsystems.Intake;
 
@@ -27,15 +26,19 @@ public class RobotContainer {
 
     // set the motor to predefined speed when "A" button on the controller is
     // pressed
-    controller.a().whileTrue(new SimpleSetSpeedComand(
+    controller.povUp().whileTrue(new SimpleSetSpeedComand(
         intake,
         Constants.SIMPLE_MOTOR_SPEED));
 
-    controller.a().whileFalse(new SimpleSetSpeedComand(
+    controller.povDown().whileTrue(new SimpleSetSpeedComand(
         intake,
-        0));
+        -Constants.SIMPLE_MOTOR_SPEED));
 
     controller.b().whileTrue(new SetMotorPositionBangBang(
+        intake,
+        90));
+
+    controller.y().whileTrue(new SetMotorPositionProportional(
         intake,
         90));
 
