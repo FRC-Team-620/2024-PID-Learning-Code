@@ -44,6 +44,10 @@ public class RobotContainer {
 
   }
 
+  public void zeroOdom() {
+    this.intake.zeroOdom();
+  }
+
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");
   }
