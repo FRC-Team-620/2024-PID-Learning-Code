@@ -13,14 +13,12 @@ import frc.robot.subsystems.Intake;
 public class SetMotorPositionJoystick extends Command {
   Intake intakeSubsystem;
   XboxController controller;
-  double desiredPosition;
 
   /** Creates a new SetMotorPositionJoystick. */
   public SetMotorPositionJoystick(Intake intakeSubsystem, XboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intakeSubsystem = intakeSubsystem;
     this.controller = controller;
-    this.desiredPosition = this.intakeSubsystem.getEncoderPosition();
   }
 
   // Called when the command is initially scheduled.
@@ -31,20 +29,21 @@ public class SetMotorPositionJoystick extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // get current sensor position
-    double currentPos = intakeSubsystem.getEncoderPosition();
+    // get current joystick and system position
+    double desiredPos = this.getJoystickAsAngle();
+    double currentPos = this.getConvertedCurrentPosition();
 
     // calculate error
-    double error = this.desiredPosition - currentPos;
+    double error = desiredPos - currentPos;
 
     // calculate proportional controller output
-    double output = MathUtil.clamp(
+    double pOutput = MathUtil.clamp(
         Constants.ARM_K_proportional * error,
         -Constants.ARM_MAX_OUTPUT,
         Constants.ARM_MAX_OUTPUT);
 
     // set motor output
-    intakeSubsystem.setSpinSpeed(output);
+    intakeSubsystem.setSpinSpeed(pOutput);
   }
 
   // returns joystick angle as degrees (-180 - 180)
