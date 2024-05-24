@@ -12,14 +12,12 @@ import frc.robot.subsystems.Intake;
 public class SetMotorPositionProportional extends Command {
   Intake intakeSubsystem;
   double desiredPosition;
-  double error;
 
   /** Creates a new SetMotorPositionProportional. */
   public SetMotorPositionProportional(Intake intakeSubsystem, double desiredPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intakeSubsystem = intakeSubsystem;
     this.desiredPosition = desiredPosition;
-    this.error = Constants.CONTROL_LOOP_ERROR;
   }
 
   // Called when the command is initially scheduled.

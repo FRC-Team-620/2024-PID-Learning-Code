@@ -5,20 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 
 public class SetMotorPositionJoystick extends Command {
   Intake intakeSubsystem;
-  XboxController controller;
+  CommandXboxController controller;
 
   /** Creates a new SetMotorPositionJoystick. */
-  public SetMotorPositionJoystick(Intake intakeSubsystem, XboxController controller) {
+  public SetMotorPositionJoystick(Intake intakeSubsystem, CommandXboxController controller) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intakeSubsystem = intakeSubsystem;
     this.controller = controller;
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -31,14 +34,15 @@ public class SetMotorPositionJoystick extends Command {
   public void execute() {
     // get current joystick and system position
     double desiredPos = this.getJoystickAsAngle();
-    double currentPos = this.getConvertedCurrentPosition();
+    double currentPos = this.intakeSubsystem.getEncoderPosition();
 
     // calculate error
     double error = desiredPos - currentPos;
+    double actualError = MathUtil.inputModulus(error, -180, 180);
 
     // calculate proportional controller output
     double pOutput = MathUtil.clamp(
-        Constants.ARM_K_proportional * error,
+        Constants.ARM_K_proportional * actualError,
         -Constants.ARM_MAX_OUTPUT,
         Constants.ARM_MAX_OUTPUT);
 
@@ -49,13 +53,14 @@ public class SetMotorPositionJoystick extends Command {
   // returns joystick angle as degrees (-180 - 180)
   private double getJoystickAsAngle() {
     // code here
-    return 0;
-  }
+    double xVal = MathUtil.applyDeadband(this.controller.getLeftX(), 0.05);
+    double yVal = MathUtil.applyDeadband(this.controller.getLeftY(), 0.05);
 
-  // should return the current angle converted to be within -180 - 180
-  private double getConvertedCurrentPosition() {
-    // code here
-    return 0;
+    double stickToRads = Math.atan2(xVal, -yVal);
+
+    double stickToDeg = Units.radiansToDegrees(stickToRads);
+    SmartDashboard.putNumber("stickToDegrees", stickToDeg);
+    return stickToDeg;
   }
 
   // Called once the command ends or is interrupted.

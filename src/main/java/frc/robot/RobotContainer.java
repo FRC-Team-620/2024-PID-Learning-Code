@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.SetMotorPositionBangBang;
+import frc.robot.commands.SetMotorPositionJoystick;
 import frc.robot.commands.SetMotorPositionProportional;
 import frc.robot.commands.SimpleSetSpeedComand;
 import frc.robot.subsystems.Intake;
@@ -19,6 +20,7 @@ public class RobotContainer {
   public RobotContainer() {
     controller = new CommandXboxController(0);
     intake = new Intake();
+    this.intake.setDefaultCommand(new SetMotorPositionJoystick(intake, controller));
     configureBindings();
   }
 
