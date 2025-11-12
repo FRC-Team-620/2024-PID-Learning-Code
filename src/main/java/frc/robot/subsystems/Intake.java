@@ -26,7 +26,10 @@ public class Intake extends SubsystemBase {
 
     // configure the intake motor
     SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
-    intakeMotorConfig.idleMode(IdleMode.kCoast);
+    intakeMotorConfig
+    .idleMode(IdleMode.kCoast)
+    .smartCurrentLimit(30)
+    .encoder.positionConversionFactor(Constants.ARM_MOTOR_POSITION_CONVERSION_FACTOR_DEGREES);
 
     // apply the config to the motor
     intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);

@@ -18,7 +18,7 @@ public class SetMotorPositionBangBang extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intakeSubsystem = intakeSubsystem;
     this.desiredPosition = desiredPosition;
-    this.error = Constants.CONTROL_LOOP_ERROR;
+    this.error = Constants.CONTROL_LOOP_ERROR_DEGREES;
   }
 
   // Called when the command is initially scheduled.
@@ -31,12 +31,13 @@ public class SetMotorPositionBangBang extends Command {
   public void execute() {
 
     double currentPos = intakeSubsystem.getEncoderPosition();
+    double motorSpeed = Constants.BANG_BANG_CONTROL_SPEED;
 
     if (!isWithinError(currentPos)) { // not there state
       if (currentPos > this.desiredPosition) {
-        intakeSubsystem.setSpinSpeed(-Constants.SIMPLE_MOTOR_SPEED);
+        intakeSubsystem.setSpinSpeed(-motorSpeed);
       } else if (currentPos < this.desiredPosition) {
-        intakeSubsystem.setSpinSpeed(Constants.SIMPLE_MOTOR_SPEED);
+        intakeSubsystem.setSpinSpeed(motorSpeed);
       }
     } else if (isWithinError(currentPos)) { // there state
       intakeSubsystem.setSpinSpeed(0);

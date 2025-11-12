@@ -20,7 +20,8 @@ public class RobotContainer {
   public RobotContainer() {
     controller = new CommandXboxController(0);
     intake = new Intake();
-    this.intake.setDefaultCommand(new SetMotorPositionJoystick(intake, controller));
+    zeroOdom();
+    // this.intake.setDefaultCommand(new SetMotorPositionJoystick(intake, controller));
     configureBindings();
   }
 
