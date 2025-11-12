@@ -4,25 +4,35 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Intake extends SubsystemBase {
-  CANSparkMax intakeMotor;
+  SparkMax intakeMotor;
 
   /** Creates a new Intake. */
   public Intake() {
-    intakeMotor = new CANSparkMax(Constants.DEVICE_ID, MotorType.kBrushless);
-    intakeMotor.setIdleMode(IdleMode.kCoast);
+    // instantiate the intake motor
+    intakeMotor = new SparkMax(Constants.DEVICE_ID, MotorType.kBrushless);
+
+    // configure the intake motor
+    SparkMaxConfig intakeMotorConfig = new SparkMaxConfig();
+    intakeMotorConfig.idleMode(IdleMode.kCoast);
+
+    // apply the config to the motor
+    intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 
-  public CANSparkMax getMotor() {
+  public SparkMax getMotor() {
     return intakeMotor;
   }
 

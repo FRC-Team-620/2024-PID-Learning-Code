@@ -26,20 +26,22 @@ public class RobotContainer {
 
   private void configureBindings() {
 
-    // set the motor to predefined speed when "A" button on the controller is
-    // pressed
+    // UP D-PAD to set speed
     controller.povUp().whileTrue(new SimpleSetSpeedComand(
         intake,
         Constants.SIMPLE_MOTOR_SPEED));
 
+    // DOWN D-PAD to set speed backwards
     controller.povDown().whileTrue(new SimpleSetSpeedComand(
         intake,
         -Constants.SIMPLE_MOTOR_SPEED));
 
+    // B button to set position with Bang-Bang control
     controller.b().whileTrue(new SetMotorPositionBangBang(
         intake,
         90));
 
+    // Y button to set position with proportional control
     controller.y().whileTrue(new SetMotorPositionProportional(
         intake,
         90));
